@@ -3,12 +3,7 @@ import bcrypt from "bcryptjs";
 
 export default async function signUp(req, res) {
   try {
-    const { username, email, password, avatar } = req.body;
-    const ExistingName = await User.findOne({ username });
-    if (ExistingName)
-      return res
-        .status(409)
-        .json({ error: "Name Already Exists", success: false });
+    const { First_name, Last_name, email, password, avatar } = req.body;
     const ExistingEmail = await User.findOne({ email });
     if (ExistingEmail)
       return res
@@ -17,7 +12,8 @@ export default async function signUp(req, res) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     const user = User({
-      username,
+      First_name,
+      Last_name,
       email,
       password: hashedPassword,
     });
