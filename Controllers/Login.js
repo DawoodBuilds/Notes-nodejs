@@ -1,9 +1,17 @@
 import User from "../Models/UserModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  email: z.email(),
+  password: z.string().min(8),
+});
 
 export default async function Login(req, res) {
   try {
+    const parsed = loginSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: "Invalid data" });
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user)
